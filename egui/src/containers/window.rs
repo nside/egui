@@ -30,6 +30,7 @@ pub struct Window<'open> {
     scroll: Option<ScrollArea>,
     collapsible: bool,
     with_title_bar: bool,
+    default_collapsed: bool,
 }
 
 impl<'open> Window<'open> {
@@ -52,6 +53,7 @@ impl<'open> Window<'open> {
                 .default_size([340.0, 420.0]), // Default inner size of a window
             scroll: None,
             collapsible: true,
+            default_collapsed: false,
             with_title_bar: true,
         }
     }
@@ -248,6 +250,7 @@ impl<'open> Window<'open> {
             resize,
             scroll,
             collapsible,
+            default_collapsed,
             with_title_bar,
         } = self;
 
@@ -319,11 +322,10 @@ impl<'open> Window<'open> {
             let frame_stroke = frame.stroke;
             let mut frame = frame.begin(&mut area_content_ui);
 
-            let default_expanded = true;
             let mut collapsing = collapsing_header::State::from_memory_with_default_open(
                 ctx,
                 collapsing_id,
-                default_expanded,
+                !default_collapsed,
             );
             let show_close_button = open.is_some();
             let title_bar = if with_title_bar {
