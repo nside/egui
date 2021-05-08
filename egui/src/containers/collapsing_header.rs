@@ -7,7 +7,7 @@ use epaint::{Shape, TextStyle};
 #[cfg_attr(feature = "persistence", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "persistence", serde(default))]
 pub(crate) struct State {
-    open: bool,
+    pub open: bool,
 
     /// Height of the region when open. Used for animations
     open_height: Option<f32>,

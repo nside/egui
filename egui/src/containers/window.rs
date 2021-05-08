@@ -31,6 +31,7 @@ pub struct Window<'open> {
     collapsible: bool,
     with_title_bar: bool,
     default_collapsed: bool,
+    collapsed: bool,
 }
 
 impl<'open> Window<'open> {
@@ -55,6 +56,7 @@ impl<'open> Window<'open> {
             collapsible: true,
             default_collapsed: false,
             with_title_bar: true,
+            collapsed: false,
         }
     }
 
@@ -229,6 +231,11 @@ impl<'open> Window<'open> {
         self.area = self.area.drag_bounds(bounds);
         self
     }
+
+    pub fn collapsed(mut self, collapsed: bool) -> Self {
+        self.collapsed = collapsed;
+        self
+    }
 }
 
 impl<'open> Window<'open> {
@@ -252,6 +259,7 @@ impl<'open> Window<'open> {
             collapsible,
             default_collapsed,
             with_title_bar,
+            collapsed,
         } = self;
 
         let frame = frame.unwrap_or_else(|| Frame::window(&ctx.style()));
@@ -327,8 +335,12 @@ impl<'open> Window<'open> {
                 collapsing_id,
                 !default_collapsed,
             );
+
             let show_close_button = open.is_some();
             let title_bar = if with_title_bar {
+                if collapsed != !collapsing.open {
+                    collapsing.toggle(&mut frame.content_ui);
+                }
                 let title_bar = show_title_bar(
                     &mut frame.content_ui,
                     title_label,
